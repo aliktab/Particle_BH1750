@@ -20,6 +20,14 @@
 #include <math.h>
 
 
+#define CMD_SET_MS_TIME_H   0x40
+#define CMD_SET_MS_TIME_L   0x60
+
+#define CMD_SET_POWER_ON    0x01
+#define CMD_SET_POWER_OFF   0x00
+#define CMD_RESET           0x07
+
+
 BH1750::BH1750(uint8_t _addr, TwoWire & _i2c) :
   m_i2c(_i2c)
 {
@@ -38,6 +46,18 @@ bool BH1750::begin()
   return true;
 }
 
+void BH1750::switch_power_off()
+{
+  m_i2c.beginTransmission(m_i2c_addr);
+  m_i2c.write(CMD_SET_POWER_OFF);
+  m_i2c.endTransmission();
+}
+
+void BH1750::switch_power_on()
+{
+  setup_sensor(m_mode);
+}
+
 void BH1750::setup_sensor(SensMode _mode)
 {
   m_i2c.beginTransmission(m_i2c_addr);
@@ -49,6 +69,17 @@ void BH1750::setup_sensor(SensMode _mode)
   wait_for_measurement();
 }
 
+void BH1750::set_measurement_time(uint8_t _time)
+{
+  m_i2c.beginTransmission(m_i2c_addr);
+  m_i2c.write(CMD_SET_MS_TIME_H | ((uint8_t)_mode >> 5));
+  m_i2c.endTransmission();
+
+  m_i2c.beginTransmission(m_i2c_addr);
+  m_i2c.write(CMD_SET_MS_TIME_L | ((uint8_t)_mode & 0x1f));
+  m_i2c.endTransmission();
+}
+
 void BH1750::make_forced_measurement()
 {
   // If we are in forced mode, the BH sensor goes back to sleep after each
@@ -56,9 +87,9 @@ void BH1750::make_forced_measurement()
   // it will take the next measurement and then return to sleep again.
   // In normal mode simply does new measurements periodically.
 
-  if (m_mode == one_time_high_res  ||
-      m_mode == one_time_high_res2 ||
-      m_mode == one_time_low_res)
+  if (m_mode == forced_mode_high_res  ||
+      m_mode == forced_mode_high_res2 ||
+      m_mode == forced_mode_low_res)
   {
     m_i2c.beginTransmission(m_i2c_addr);
     m_i2c.write((uint8_t)m_mode);
@@ -80,7 +111,7 @@ float BH1750::get_light_level()
 
 void BH1750::wait_for_measurement()
 {
-  delay((m_mode == one_time_low_res ||
+  delay((m_mode == forced_mode_low_res ||
          m_mode == continuous_low_res) ? 24 : 180); // max measurement time 24 for low res and 180 for high res
 }
 

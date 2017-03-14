@@ -25,21 +25,12 @@
 #include <Particle.h>
 
 
-#define BH1750_BLINK_OFF       0
-#define BH1750_BLINK_2HZ       1
-#define BH1750_BLINK_1HZ       2
-#define BH1750_BLINK_HALFHZ    3
-
-
 class BH1750
 {
 public:
 
   enum SensMode
   {
-    power_down            = 0x00,
-    power_on              = 0x01,
-
     // start measurement at 1lx resolution. measurement time is approx 120ms.
     continuous_high_res   = 0x10,
 
@@ -51,15 +42,15 @@ public:
 
     // start measurement at 1lx resolution. measurement time is approx 120ms.
     // device is automatically set to power down after measurement.
-    one_time_high_res     = 0x20,
+    forced_mode_high_res  = 0x20,
 
     // start measurement at 0.5lx resolution. measurement time is approx 120ms.
     // device is automatically set to power down after measurement.
-    one_time_high_res2    = 0x21,
+    forced_mode_high_res2 = 0x21,
 
     // start measurement at 1lx resolution. measurement time is approx 120ms.
     // device is automatically set to power down after measurement.
-    one_time_low_res      = 0x23
+    forced_mode_low_res   = 0x23
   };
 
   // Constructor: I2C address, I2C interface
@@ -68,14 +59,28 @@ public:
       TwoWire & _i2c  = Wire
     );
 
+  // initialize chip and i2c interface if needed
   bool begin();
 
+  // switch chip to sleep mode with low power consumption
+  void switch_power_off();
+
+  // switch chip back to selected measurement mode
+  void switch_power_on();
+
   // setup sensor with given parameters / settings
+  //   switch power on if it is currently off
   void setup_sensor(
       SensMode _mode = continuous_high_res2
     );
 
+  // setup measurement time - 69 is the default value from data sheet
+  void set_measurement_time(
+      uint8_t _time = 69
+    );
+
   // make a new measurement (only possible in forced mode)
+  //   switch power on if it is currently off
   void make_forced_measurement();
 
   float get_light_level();

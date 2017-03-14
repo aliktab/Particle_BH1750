@@ -23,7 +23,7 @@ void setup()
 {
   sensor.begin();
 
-  sensor.setup_sensor(BH1750::one_time_high_res2);
+  sensor.setup_sensor(BH1750::forced_mode_high_res2);
 
   Serial.begin();
 }
