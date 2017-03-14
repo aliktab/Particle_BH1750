@@ -29,9 +29,9 @@
 
 
 BH1750::BH1750(uint8_t _addr, TwoWire & _i2c) :
-  m_i2c(_i2c)
+  m_i2c(_i2c), m_i2c_addr(_addr)
 {
-  m_i2c_addr = _addr;
+  m_mode     = continuous_high_res2;
 }
 
 bool BH1750::begin()
@@ -41,7 +41,7 @@ bool BH1750::begin()
     m_i2c.begin();
   }
 
-  setup_sensor(); // use defaults
+  switch_power_off();
 
   return true;
 }
@@ -55,10 +55,15 @@ void BH1750::switch_power_off()
 
 void BH1750::switch_power_on()
 {
-  setup_sensor(m_mode);
+  set_sensor_mode(m_mode);
 }
 
-void BH1750::setup_sensor(SensMode _mode)
+const BH1750::SensMode BH1750::get_sensor_mode() const
+{
+  return m_mode;
+}
+
+void BH1750::set_sensor_mode(SensMode _mode)
 {
   m_i2c.beginTransmission(m_i2c_addr);
   m_i2c.write((uint8_t)_mode);
@@ -72,11 +77,11 @@ void BH1750::setup_sensor(SensMode _mode)
 void BH1750::set_measurement_time(uint8_t _time)
 {
   m_i2c.beginTransmission(m_i2c_addr);
-  m_i2c.write(CMD_SET_MS_TIME_H | ((uint8_t)_mode >> 5));
+  m_i2c.write(CMD_SET_MS_TIME_H | ((uint8_t)_time >> 5));
   m_i2c.endTransmission();
 
   m_i2c.beginTransmission(m_i2c_addr);
-  m_i2c.write(CMD_SET_MS_TIME_L | ((uint8_t)_mode & 0x1f));
+  m_i2c.write(CMD_SET_MS_TIME_L | ((uint8_t)_time & 0x1f));
   m_i2c.endTransmission();
 }
 

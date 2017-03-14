@@ -50,7 +50,7 @@ public:
 
     // start measurement at 1lx resolution. measurement time is approx 120ms.
     // device is automatically set to power down after measurement.
-    forced_mode_low_res   = 0x23
+    forced_mode_low_res   = 0x23,
   };
 
   // Constructor: I2C address, I2C interface
@@ -59,7 +59,7 @@ public:
       TwoWire & _i2c  = Wire
     );
 
-  // initialize chip and i2c interface if needed
+  // initialize chip and i2c interface if needed, switch chip power of
   bool begin();
 
   // switch chip to sleep mode with low power consumption
@@ -68,9 +68,11 @@ public:
   // switch chip back to selected measurement mode
   void switch_power_on();
 
+  const SensMode get_sensor_mode() const;
+
   // setup sensor with given parameters / settings
   //   switch power on if it is currently off
-  void setup_sensor(
+  void set_sensor_mode(
       SensMode _mode = continuous_high_res2
     );
 
