@@ -59,7 +59,7 @@ public:
       TwoWire & _i2c  = Wire
     );
 
-  // initialize chip and i2c interface if needed, switch chip power of
+  // initialize chip and i2c interface if needed
   bool begin();
 
   // switch chip to sleep mode with low power consumption

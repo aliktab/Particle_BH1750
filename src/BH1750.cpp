@@ -31,7 +31,7 @@
 BH1750::BH1750(uint8_t _addr, TwoWire & _i2c) :
   m_i2c(_i2c), m_i2c_addr(_addr)
 {
-  m_mode     = continuous_high_res2;
+  m_mode = continuous_high_res2;
 }
 
 bool BH1750::begin()
@@ -40,8 +40,6 @@ bool BH1750::begin()
   {
     m_i2c.begin();
   }
-
-  switch_power_off();
 
   return true;
 }
