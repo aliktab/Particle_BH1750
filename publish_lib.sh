@@ -14,7 +14,7 @@ cp    README.md       _particle_upload
 
 cd _particle_upload
 
-particle library publish
+particle library publish BH1750
 
 cd ..
 rm -R _particle_upload
