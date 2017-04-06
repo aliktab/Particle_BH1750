@@ -53,7 +53,7 @@ public:
     forced_mode_low_res   = 0x23,
   };
 
-  // Constructor: I2C address, I2C interface
+  // сonstructor: I2C address, I2C interface
   BH1750(
       uint8_t   _addr = 0x23,
       TwoWire & _i2c  = Wire
