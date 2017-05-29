@@ -2,7 +2,6 @@
 
 /*
   Based on: https://github.com/davidegironi/spark-bh1750lib
-  DataSheet:
 
   Copyright (C) 2014 Alik <aliktab@gmail.com> All rights reserved.
 
