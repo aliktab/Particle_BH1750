@@ -21,7 +21,7 @@
 */
 
 // this will load the definition for common Particle variable types
-#include <Particle.h>
+#include "application.h"
 
 
 class BH1750
