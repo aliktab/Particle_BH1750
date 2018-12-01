@@ -105,8 +105,8 @@ void BH1750::make_forced_measurement()
 float BH1750::get_light_level()
 {
   m_i2c.beginTransmission(m_i2c_addr);
-  m_i2c.requestFrom(m_i2c_addr, 2);
-  const uint16_t level = (m_i2c.read() << 8) | m_i2c.read();
+  m_i2c.requestFrom(m_i2c_addr, (uint8_t)2);
+  const float level = (m_i2c.read() << 8) | m_i2c.read();
   m_i2c.endTransmission();
 
   return (float)level / 1.2f; // convert to lux
